@@ -17,11 +17,22 @@ typedef struct surface {
     vector normal;
 } surface;
 
+typedef struct bouncer {
+    vector position;
+    float radius;
+    // Minimal norm of the velocity given to the ball after collision
+    float bounce_force;
+} bouncer;
+
 
 float get_distance(ball* b, surface* s);
 
+float get_bouncer_distance(ball* b, bouncer* bouncer);
+
 bool check_collision(ball* b, surface* s);
 
-void handle_collsion(ball* b, surface* s);
+void handle_collision(ball* b, surface* s);
+
+void handle_bouncer_collision(ball* b, bouncer* bouncer);
 
 #endif

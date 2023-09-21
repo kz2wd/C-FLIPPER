@@ -8,6 +8,11 @@ vector add_vectors(vector* v1, vector* v2){
     return result;
 }
 
+vector substract_vectors(vector* v1, vector* v2){
+    vector result = { v1->x - v2->x, v1->y - v2->y };
+    return result;
+}
+
 vector scaled_vector(vector* v, float scale){
     vector result = { v->x * scale, v->y * scale };
     return result;

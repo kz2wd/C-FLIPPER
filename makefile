@@ -8,7 +8,7 @@ OBJS = $(SRCS:.c=.o)
 build: $(OBJS)
 	$(CC) $(CFLAG) $^ main.c -o main $(LIBS)
 
-build-run: build 
+run: build 
 	./main
 
 clean:

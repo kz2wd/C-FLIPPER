@@ -9,6 +9,8 @@ typedef struct vector {
 
 vector add_vectors(vector* v1, vector* v2);
 
+vector substract_vectors(vector* v1, vector* v2);
+
 vector scaled_vector(vector* v, float scale);
 
 void print_vector(vector* v);

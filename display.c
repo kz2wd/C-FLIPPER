@@ -7,26 +7,51 @@ int world_x(float x){
 }
 
 int world_y(float y){
-    return (- ((int) y) + LINES - 3) / 2;
+    return (- ((int) y)) / 2 + LINES - 3;
 }
 
 void print_element(vector* pos, char chr){
     mvaddch(world_y(pos->y), world_x(pos->x), chr);
 }
 
-char get_char_at_ball(ball* b){
-    return mvinch(world_y(b->position.y), world_x(b->position.x)) & A_CHARTEXT;
+void print_element_with_offset(vector* pos, int x_offset, int y_offset, char chr){
+    mvaddch(world_y(pos->y + y_offset), world_x(pos->x + x_offset), chr);
 }
-void print_ball(ball* b){
-    if (get_char_at_ball(b) == EMPTY_CHAR){
-        print_element(&b->position, BALL_CHAR);
+
+char get_char_at_ball(ball* b, int x_offset, int y_offset){
+    return mvinch(world_y(b->position.y + y_offset), world_x(b->position.x + x_offset)) & A_CHARTEXT;
+}
+
+void draw_circle(vector* origin, float radius, char chr){
+    int r = (int) radius;
+    float r_squared = radius * radius;
+    for (int i = -r; i <= r; ++i){
+        for (int j = -r; j <= r; ++j){
+            if (i * i + j * j < r_squared){
+                print_element_with_offset(origin, i, j, chr);
+            }
+        }
     }
 }
 
-void erase_ball(ball *b){
-    if (get_char_at_ball(b) == BALL_CHAR){
-        print_element(&b->position, EMPTY_CHAR);
+void iterate_over_ball_draw(ball *b, char print, char replace){
+    int radius = (int) b->radius;
+    float square_radius = b->radius * b->radius;
+    for (int i = -radius; i <= radius; ++i){
+        for (int j = -radius; j <= radius; ++j){
+            if ((float) (i * i) + (j * j) < square_radius && get_char_at_ball(b, i, j) == replace){
+                print_element_with_offset(&b->position, i, j, print);
+            }
+        }
     }
+}
+
+void print_ball(ball* b){
+    iterate_over_ball_draw(b, BALL_CHAR, EMPTY_CHAR);
+}
+
+void erase_ball(ball *b){
+    iterate_over_ball_draw(b, EMPTY_CHAR, BALL_CHAR);
 }
 
 void print_surface(surface* s){
@@ -40,3 +65,8 @@ void print_surface(surface* s){
         print_element(&draw_pos, 219);
     }
 }
+
+void print_bouncer(bouncer* bouncer){
+    draw_circle(&bouncer->position, (int) bouncer->radius, 219);
+}
+
