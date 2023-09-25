@@ -1,7 +1,4 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <ncurses.h>
 
 #include "vector.h"
 #include "world.h"
@@ -43,14 +40,16 @@ int main(void){
 
     init_display(&world);
 
-    while(true){
+    bool run = true;
+    while(run){
         
         loop_start_display(&world);
+        run = handle_events(&world);
 
         world_update(&world, delta_time);
         
         loop_end_display(&world);
-        usleep(16 * 1000 * delta_time);  // wait a bit :)
+        loop_wait(50);
     }
     
     terminate_display(&world);

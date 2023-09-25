@@ -1,19 +1,49 @@
 CC = gcc
-CFLAG = `sdl2-config --libs --cflags` -std=c99 -Wall -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200112L
-LIBS = -lm -lncurses
-SDLFLAGS = $(shell pkg-config --cflags --libs sdl2)
-SRCS = vector.c world.c ascii_display.c
+CFLAG = --std=c99 -Wall -Wextra
+LIBS = -lm 
+DISPLAY_TYPE ?= SDL
+SRCS = vector.c world.c 
+
+SDL_DISPLAY = sdl_display.c
+SDL_LIBS = $(shell pkg-config --cflags --libs sdl2) 
+
+ASCII_DISPLAY = ascii_display.c
+ASCII_CFLAG = -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200112L
+ASCII_LIBS = -lncurses
+
+
 OBJS = $(SRCS:.c=.o)
+
+.PHONY: clean launch
+
+launch: $(OBJS)
+ifeq (SDL, $(DISPLAY_TYPE))
+	@echo 'Using SDL display'
+	@make build LIBS='$(LIBS) $(SDL_LIBS)' SRCS='$(SRCS) $(SDL_DISPLAY)'
+else
+	@echo 'Using ASCII display'
+	@make build LIBS='$(LIBS) $(ASCII_LIBS)' SRCS='$(SRCS) $(ASCII_DISPLAY)' CFLAG='$(CFLAG) $(ASCII_CFLAG)'
+endif
 
 
 build: $(OBJS)
-	$(CC) $(CFLAG) $^ main.c -o main $(LIBS) 
+	$(CC) $(CFLAG) $^ main.c -o main $(LIBS)
 
-run: build 
+
+run: launch 
 	./main
+
+run-ascii: 
+	@make run DISPLAY_TYPE=ASCII
+
 
 clean:
 	rm -f *.o main
 
 %.o : %.c
-	$(CC) $(CFLAG) -c $^ -o $@ $(LIBS) $(SDLFLAGS)
+	$(CC) $(CFLAG) -c $^ -o $@ $(LIBS) 
+
+
+
+	
+

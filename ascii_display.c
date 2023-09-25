@@ -1,7 +1,13 @@
 #include "display.h"
-#include <ncurses.h>
+
 #include "vector.h"
 #include "world.h"
+
+#include <unistd.h>
+#include <ncurses.h>
+
+
+#define UNUSED(x) (void)(x)
 
 // ASCII DISPLAY FUNCTIONS
 
@@ -40,12 +46,22 @@ void loop_start_display(world* world){
     erase_ball(world->b);
 }
 
+bool handle_events(world *world){
+    UNUSED(world);
+    return true;
+}
+
 void loop_end_display(world* world){
     print_ball(world->b);
     refresh();
 }
 
+void loop_wait(int max_fps){
+    usleep(1000 * 1000 / max_fps);
+}
+
 void terminate_display(world* world){
+    UNUSED(world);
     endwin();
 }
 
