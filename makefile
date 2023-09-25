@@ -14,7 +14,7 @@ ASCII_LIBS = -lncurses
 
 OBJS = $(SRCS:.c=.o)
 
-.PHONY: clean launch
+.PHONY: clean build
 
 build: $(OBJS)
 ifeq (SDL, $(DISPLAY_TYPE))
@@ -29,7 +29,7 @@ build-standard: $(OBJS)
 	$(CC) $(CFLAG) $^ main.c -o main $(LIBS)
 
 
-run: launch 
+run: build 
 	./main
 
 build-ascii: 
