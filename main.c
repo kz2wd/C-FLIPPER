@@ -9,10 +9,11 @@
 
 
 int main(void){
+    
     ball b = { { 50.f, 40.f }, { 0.f, 0.f }, 10.f };
-    float delta_time = 1.f;  // Doesn't work as intended :(
+    float delta_time = 2.f;  // Doesn't work as intended :(
     vector gravity = { 0.f * delta_time, -0.1f * delta_time };
-    float friction = .990f * delta_time;
+    float friction = .990f;
     
     int surface_amount = 3;
     surface surfaces[] = {
@@ -28,37 +29,30 @@ int main(void){
         { {  60.f, 30.f }, 7.f, 2.8f }
     };
 
-    initscr();
-    curs_set(0);
-    for (int i = 0; i < surface_amount; ++i){
-        surfaces[i].normal = normalized_vector(&surfaces[i].normal);
-        print_surface(&surfaces[i]);
-    }
-    for (int i = 0; i < bouncer_amount; ++i){
-        print_bouncer(&bouncers[i]);
-    }
+    world world = { 
+        .b=&b,
+        .surface_amount=surface_amount,
+        .surfaces=surfaces,
+        .bouncer_amount=bouncer_amount,
+        .bouncers=bouncers,
+        .gravity=&gravity,
+        .friction=friction
+    };
+
+    world_init(&world);
+
+    init_display(&world);
 
     while(true){
         
-        erase_ball(&b);
+        loop_start_display(&world);
 
-        b.speed = add_vectors(&b.speed, &gravity);
-        b.speed = scaled_vector(&b.speed, friction);
-        vector movement = scaled_vector(&b.speed, delta_time);
-        b.position = add_vectors(&b.position, &movement);
-
-        for (int i = 0; i < surface_amount; ++i){
-            handle_collision(&b, &surfaces[i]);
-        }
-        for (int i = 0; i < bouncer_amount; ++i){
-            handle_bouncer_collision(&b, &bouncers[i]);
-        }
+        world_update(&world, delta_time);
         
-        print_ball(&b);
-        
-        refresh();
-        usleep(50 * 1000 * delta_time);
+        loop_end_display(&world);
+        usleep(16 * 1000 * delta_time);  // wait a bit :)
     }
-    endwin();
+    
+    terminate_display(&world);
     return EXIT_SUCCESS;
 }

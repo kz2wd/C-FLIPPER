@@ -24,15 +24,19 @@ typedef struct bouncer {
     float bounce_force;
 } bouncer;
 
+typedef struct world {
+    ball* b;
+    int surface_amount;
+    surface* surfaces;
+    int bouncer_amount;
+    bouncer* bouncers;
+    vector* gravity;
+    float friction;
+} world; 
 
-float get_distance(ball* b, surface* s);
 
-float get_bouncer_distance(ball* b, bouncer* bouncer);
+void world_init(world* world);
 
-bool check_collision(ball* b, surface* s);
-
-void handle_collision(ball* b, surface* s);
-
-void handle_bouncer_collision(ball* b, bouncer* bouncer);
+void world_update(world* world, float delta_time);
 
 #endif

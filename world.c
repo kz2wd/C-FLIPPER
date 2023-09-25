@@ -3,6 +3,45 @@
 #include <math.h>
 #include <stdbool.h>
 
+// World internal functions declaration
+
+float get_distance(ball* b, surface* s);
+
+float get_bouncer_distance(ball* b, bouncer* bouncer);
+
+bool check_collision(ball* b, surface* s);
+
+void handle_collision(ball* b, surface* s);
+
+void handle_bouncer_collision(ball* b, bouncer* bouncer);
+
+
+// World functions implementations
+
+void world_init(world* world){
+    // Makes sure that normals of surfaces have norms of size 1.
+      for (int i = 0; i < world->surface_amount; ++i){
+        world->surfaces[i].normal = normalized_vector(&world->surfaces[i].normal);
+    }
+}
+
+void world_update(world* world, float delta_time){
+    world->b->speed = add_vectors(&world->b->speed, world->gravity);
+    world->b->speed = scaled_vector(&world->b->speed, world->friction);
+    vector movement = scaled_vector(&world->b->speed, delta_time);
+    world->b->position = add_vectors(&world->b->position, &movement);
+
+    for (int i = 0; i < world->surface_amount; ++i){
+        handle_collision(world->b, &world->surfaces[i]);
+    }
+    for (int i = 0; i < world->bouncer_amount; ++i){
+        handle_bouncer_collision(world->b, &world->bouncers[i]);
+    }
+}
+
+
+// World internal functions implementations
+
 float get_distance(ball* b, surface* s){
     float distance = 
         distance_point_and_line(&b->position, &s->start, &s->end);
@@ -37,8 +76,6 @@ void handle_collision(ball* b, surface* s){
         b->speed = scaled_vector(&new_speed, -1.f);
     }
 }
-
-
 
 void handle_bouncer_collision(ball* b, bouncer* bouncer){
     float distance = get_bouncer_distance(b, bouncer);

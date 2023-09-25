@@ -1,6 +1,57 @@
 #include <display.h>
 #include <ncurses.h>
+#include <vector.h>
+#include <world.h>
 
+// ASCII DISPLAY FUNCTIONS
+
+#define BALL_CHAR 'Q'
+#define EMPTY_CHAR ' '
+
+int world_x(float x);
+
+int world_y(float y);
+
+void print_element(vector* pos, char chr);
+
+void print_ball(ball* b);
+
+void erase_ball(ball *b);
+
+void print_surface(surface* s);
+
+void print_bouncer(bouncer* bouncer);
+
+// INTERFACE IMPLEMENTATION
+
+void init_display(world* world){
+    initscr();
+    curs_set(0);
+    
+     for (int i = 0; i < world->surface_amount; ++i){
+        print_surface(&world->surfaces[i]);
+    }
+    for (int i = 0; i < world->bouncer_amount; ++i){
+        print_bouncer(&world->bouncers[i]);
+    }
+}
+
+void loop_start_display(world* world){
+    erase_ball(world->b);
+}
+
+void loop_end_display(world* world){
+    print_ball(world->b);
+    refresh();
+}
+
+void terminate_display(world* world){
+    endwin();
+}
+
+
+
+// ASCII DISPLAY IMPLEMENTATION
 
 int world_x(float x){
     return ((int) x) + COLS / 2;
