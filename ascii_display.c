@@ -1,7 +1,7 @@
-#include <display.h>
+#include "display.h"
 #include <ncurses.h>
-#include <vector.h>
-#include <world.h>
+#include "vector.h"
+#include "world.h"
 
 // ASCII DISPLAY FUNCTIONS
 

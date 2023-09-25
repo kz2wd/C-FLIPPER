@@ -3,13 +3,13 @@
 #include <unistd.h>
 #include <ncurses.h>
 
-#include <vector.h>
-#include <world.h>
-#include <display.h>
+#include "vector.h"
+#include "world.h"
+#include "display.h"
 
 
 int main(void){
-    
+
     ball b = { { 50.f, 40.f }, { 0.f, 0.f }, 10.f };
     float delta_time = 2.f;  // Doesn't work as intended :(
     vector gravity = { 0.f * delta_time, -0.1f * delta_time };

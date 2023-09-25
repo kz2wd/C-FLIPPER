@@ -1,6 +1,6 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
-#include <world.h>
+#include "world.h"
 
 void init_display(world* world);
 
