@@ -16,22 +16,24 @@ OBJS = $(SRCS:.c=.o)
 
 .PHONY: clean launch
 
-launch: $(OBJS)
+build: $(OBJS)
 ifeq (SDL, $(DISPLAY_TYPE))
 	@echo 'Using SDL display'
-	@make build LIBS='$(LIBS) $(SDL_LIBS)' SRCS='$(SRCS) $(SDL_DISPLAY)'
+	@make build-standard LIBS='$(LIBS) $(SDL_LIBS)' SRCS='$(SRCS) $(SDL_DISPLAY)'
 else
 	@echo 'Using ASCII display'
-	@make build LIBS='$(LIBS) $(ASCII_LIBS)' SRCS='$(SRCS) $(ASCII_DISPLAY)' CFLAG='$(CFLAG) $(ASCII_CFLAG)'
+	@make build-standard LIBS='$(LIBS) $(ASCII_LIBS)' SRCS='$(SRCS) $(ASCII_DISPLAY)' CFLAG='$(CFLAG) $(ASCII_CFLAG)'
 endif
 
-
-build: $(OBJS)
+build-standard: $(OBJS)
 	$(CC) $(CFLAG) $^ main.c -o main $(LIBS)
 
 
 run: launch 
 	./main
+
+build-ascii: 
+	@make build DISPLAY_TYPE=ASCII
 
 run-ascii: 
 	@make run DISPLAY_TYPE=ASCII
