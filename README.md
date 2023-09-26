@@ -1,6 +1,10 @@
 # C Flipper
 
+## ASCII DISPLAY
 ![Gif showing a ball in ASCII bounce around](bigball.gif)
+
+## SDL DISPLAY
+![Gif showing a ball in SDL bounce around](sdl.gif)
 
 ## How to run ?
 
