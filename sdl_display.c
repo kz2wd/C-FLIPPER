@@ -122,7 +122,7 @@ int world_x(float x){
 }
 
 int world_y(float y){
-    return ((- ((int) y)) / 2) * SCALE + window_size_y - 30;
+    return (- ((int) y)) * SCALE + window_size_y - 30;
 }
 
 void draw_circle(int x, int y, int radius, int precision){
