@@ -94,3 +94,7 @@ void handle_bouncer_collision(ball* b, bouncer* bouncer){
         b->speed = scaled_vector(&normal, fmaxf(bouncer->bounce_force, vector_norm(&b->speed)));
     }
 }
+
+void world_activate_kickers(world* world, enum KICKER_TYPE type){
+  // TODO
+}

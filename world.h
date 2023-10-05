@@ -24,6 +24,13 @@ typedef struct bouncer {
     float bounce_force;
 } bouncer;
 
+typedef struct kicker {
+  surface* surface;
+  float speed;
+  float max_angle;
+  bool activated;
+} kicker;
+
 typedef struct world {
     ball* b;
     int surface_amount;
@@ -32,11 +39,20 @@ typedef struct world {
     bouncer* bouncers;
     vector* gravity;
     float friction;
+  kicker *kicker;
 } world; 
 
 
 void world_init(world* world);
 
 void world_update(world* world, float delta_time);
+
+enum KICKER_TYPE {
+  RIGHT,
+  LEFT,
+};
+
+
+void world_activate_kickers(world* world, enum KICKER_TYPE type);
 
 #endif

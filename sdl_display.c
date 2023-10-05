@@ -32,6 +32,8 @@ int world_y(float y);
 
 void draw_circle(int x, int y, int radius, int precision);
 
+void handle_key(world* world, SDL_Event* event);
+
 
 // INTERFACE IMPLEMENTATION
 
@@ -65,12 +67,19 @@ void loop_start_display(world* world){
 bool handle_events(world *world){
     UNUSED(world);
     SDL_Event event;
- 
+    
     while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
-            return false;
-        }
+      switch(event.type){
+      case SDL_QUIT:
+	return false;
+      case SDL_KEYDOWN:
+	handle_key(world, &event);
+	break;
+      default:
+	break;
+      }
     }
+     
     return true;
 }
 
@@ -144,3 +153,12 @@ void draw_circle(int x, int y, int radius, int precision){
 
     SDL_RenderDrawLines(renderer, points_buffer, precision + 1);
 }
+
+
+ void handle_key(world* world, SDL_Event* event){
+   printf("Key pressed\n");
+   switch(event->key.keysym.sym){
+   case SDLK_LEFT:
+     
+   }
+ }
