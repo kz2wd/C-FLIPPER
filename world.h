@@ -15,6 +15,7 @@ typedef struct surface {
     vector start;
     vector end;
     vector normal;
+    bool is_infinite;
 } surface;
 
 typedef struct bouncer {
@@ -24,11 +25,18 @@ typedef struct bouncer {
     float bounce_force;
 } bouncer;
 
+enum KICKER_SIDE {
+  LEFT_SIDE,
+  RIGHT_SIDE,
+};
+
 typedef struct kicker {
-  surface* surface;
-  float speed;
+  surface *surface;
+  float rotation_speed;
   float max_angle;
+  float current_angle;
   bool activated;
+  enum KICKER_SIDE side;
 } kicker;
 
 typedef struct world {
@@ -39,7 +47,8 @@ typedef struct world {
     bouncer* bouncers;
     vector* gravity;
     float friction;
-  kicker *kicker;
+    int kicker_amount;
+    kicker *kickers;
 } world; 
 
 
@@ -47,12 +56,8 @@ void world_init(world* world);
 
 void world_update(world* world, float delta_time);
 
-enum KICKER_TYPE {
-  RIGHT,
-  LEFT,
-};
-
-
-void world_activate_kickers(world* world, enum KICKER_TYPE type);
+void world_activate_kickers(world* world, enum KICKER_SIDE side);
+void world_deactivate_kickers(world* world, enum KICKER_SIDE side);
 
 #endif
+

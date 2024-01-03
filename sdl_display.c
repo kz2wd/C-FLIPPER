@@ -32,7 +32,9 @@ int world_y(float y);
 
 void draw_circle(int x, int y, int radius, int precision);
 
-void handle_key(world* world, SDL_Event* event);
+void handle_key_down(world* world, SDL_Event* event);
+
+void handle_key_up(world* world, SDL_Event* event);
 
 
 // INTERFACE IMPLEMENTATION
@@ -51,7 +53,7 @@ void init_display(world* world){
         fprintf(stderr, "Could not establish window");
         return;
     }
-                                    
+
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (renderer == NULL){
         fprintf(stderr, "Could not establish renderer");
@@ -69,13 +71,16 @@ bool handle_events(world *world){
     SDL_Event event;
     
     while (SDL_PollEvent(&event)) {
-      switch(event.type){
-      case SDL_QUIT:
+        switch(event.type){
+        case SDL_QUIT:
 	return false;
-      case SDL_KEYDOWN:
-	handle_key(world, &event);
-	break;
-      default:
+        case SDL_KEYDOWN:
+	        handle_key_down(world, &event);
+            break;
+        case SDL_KEYUP:
+            handle_key_up(world, &event);
+	        break;
+         default:
 	break;
       }
     }
@@ -83,20 +88,30 @@ bool handle_events(world *world){
     return true;
 }
 
+void draw_surface(surface *surface){
+    SDL_RenderDrawLine(renderer, 
+            world_x(surface->start.x), world_y(surface->start.y), 
+            world_x(surface->end.x), world_y(surface->end.y));
+}
+
 void loop_end_display(world* world){
    
    SDL_RenderClear(renderer);
    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-   for (int i = 0; i < world->surface_amount; ++i){
-        SDL_RenderDrawLine(renderer, 
-            world_x(world->surfaces[i].start.x), world_y(world->surfaces[i].start.y), 
-            world_x(world->surfaces[i].end.x), world_y(world->surfaces[i].end.y));
+    // Draw surfaces
+
+    for (int i = 0; i < world->surface_amount; ++i){
+       draw_surface(&world->surfaces[i]);
     }
+
+    // Draw bouncers
 
     for (int i = 0; i < world->bouncer_amount; ++i){
         draw_circle(world_x(world->bouncers[i].position.x), world_y(world->bouncers[i].position.y), world->bouncers[i].radius, STD_PRECISION);
     }
+
+    // Draw ball
 
     draw_circle(world_x(world->b->position.x), world_y(world->b->position.y), world->b->radius, STD_PRECISION);
 
@@ -155,10 +170,24 @@ void draw_circle(int x, int y, int radius, int precision){
 }
 
 
- void handle_key(world* world, SDL_Event* event){
-   printf("Key pressed\n");
-   switch(event->key.keysym.sym){
-   case SDLK_LEFT:
-     
+ void handle_key_down(world* world, SDL_Event* event){
+    switch(event->key.keysym.sym){
+    case SDLK_LEFT:
+        world_activate_kickers(world, LEFT_SIDE);
+        break;
+    case SDLK_RIGHT:
+        world_activate_kickers(world, RIGHT_SIDE);
+        break;
+   }
+ }
+
+ void handle_key_up(world* world, SDL_Event* event){
+    switch(event->key.keysym.sym){
+    case SDLK_LEFT:
+        world_deactivate_kickers(world, LEFT_SIDE);
+        break;
+    case SDLK_RIGHT:
+        world_deactivate_kickers(world, RIGHT_SIDE);
+        break;
    }
  }
